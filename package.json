@@ -7,7 +7,10 @@
     "dev": "npm-run-all --parallel dev:**",
     "dev:start": "nodemon build/server.js",
     "dev:build:client": "webpack --config webpack.client.js --watch",
-    "dev:build:server": "webpack --config webpack.server.js --watch"
+    "dev:build:server": "webpack --config webpack.server.js --watch",
+    "start": "node scripts/start.js",
+    "build": "node scripts/build.js",
+    "test": "node scripts/test.js"
   },
   "keywords": [],
   "author": "",
