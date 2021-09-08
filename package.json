@@ -8,8 +8,8 @@
     "dev:start": "nodemon build/server.js",
     "dev:build:client": "webpack --config webpack.client.js --watch",
     "dev:build:server": "webpack --config webpack.server.js --watch",
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
+    "build:ssr": "node scripts/build-ssr.js",
+    "build:csr": "node scripts/build-csr.js",
     "test": "node scripts/test.js"
   },
   "keywords": [],
@@ -42,6 +42,7 @@
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
+    "chalk": "^4.1.2",
     "nodemon": "^2.0.12",
     "npm-run-all": "^4.1.5",
     "webpack": "^4.28.4",
