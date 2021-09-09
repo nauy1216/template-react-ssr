@@ -65,6 +65,7 @@ function scssRules(config) {
 
 function cssRules(config) {
     const rules = [
+        // 'style-loader',
         'css-loader',
         // TODO 解决报错
         // {
@@ -188,6 +189,7 @@ function babelConfig(config) {
 
 
 module.exports = function () {
+    debugger
     const config = getConfig()
 
     let webpackConfig = {
@@ -442,8 +444,8 @@ module.exports = function () {
             ],
         })
 
-        if (webpackConfig.extraCssPlugin) {
-            prodConfig.plugins.push(new MiniCssExtractPlugin({
+        if (config.extraCssPlugin) {
+            webpackConfig.plugins.push(new MiniCssExtractPlugin({
                 filename: 'css/[name].[contenthash].css',
                 chunkFilename: 'css/[name].[contenthash].css',
                 ignoreOrder: false, // Enable to remove warnings about conflicting order
