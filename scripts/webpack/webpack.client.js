@@ -12,6 +12,9 @@ const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin').CleanWebpackPlugin;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 function scssRules(config) {
     const scssRules = [
@@ -61,8 +64,7 @@ function scssRules(config) {
 }
 
 function cssRules(config) {
-    return [
-        'style-loader',
+    const rules = [
         'css-loader',
         // TODO 解决报错
         // {
@@ -78,6 +80,13 @@ function cssRules(config) {
         //     },
         // },
     ]
+    // 正式环境并且extraCssPlugin时导出css文件，否则用style-loader处理
+    if (!config.isDev && config.extraCssPlugin) {
+        rules.unshift({ loader: MiniCssExtractPlugin.loader });
+    } else {
+        rules.unshift('style-loader');
+    }
+    return rules
 }
 
 function babelConfig(config) {
@@ -181,14 +190,16 @@ function babelConfig(config) {
 module.exports = function () {
     const config = getConfig()
 
-    const webpackConfig = merge({}, {
-        mode: config.isDev? 'development': 'production',
+    let webpackConfig = {
+        // mode: config.isDev? 'development': 'production',
         target: 'web',
-        devtool: 'cheap-module-eval-source-map',
-        entry: paths.clientEntry,
+        // devtool: 'cheap-module-eval-source-map',
+        entry: {
+            client: paths.clientEntry
+        },
         output: {
             path: paths.clientBuild,
-            filename: 'client.js',
+            // filename: 'client.js',
             publicPath: './'
         },
         resolve: {
@@ -285,22 +296,10 @@ module.exports = function () {
             new webpack.DefinePlugin({
                 'DEBUG': config.isDev,
                 ...config.definePlugin,
-            }),
-            new HtmlWebpackPlugin({
-                // inject: true,
-                chunks: 'all',
-                hash: true,
-                cache: false,
-                loading: false,
-                filename: 'index.html',
-                // favicon: 'favicon.ico',
-                template: './src/index.ejs',
-                // 自定义的需要注入到template的内容
-                front_config: `<script>window.context = {}</script>`
-            }),
+            })
         ],
         externals: {},
-    });
+    };
 
     // svg模块
     if (config.svgr) {
@@ -327,6 +326,129 @@ module.exports = function () {
     // 构建分析
     if (config.analyzePlugin) {
         webpackConfig.plugins.push(new BundleAnalyzerPlugin());
+    }
+
+    // development
+    if (config.isDev) {
+        webpackConfig = merge(webpackConfig, {
+            mode: 'development',
+            devtool: 'cheap-module-eval-source-map',
+            output: {
+                filename: '[name].js',
+                chunkFilename: '[name].js',
+            },
+            plugins: [
+                new HtmlWebpackPlugin({
+                    // inject: true,
+                    chunks: 'all',
+                    hash: true,
+                    cache: false,
+                    loading: false,
+                    filename: 'index.html',
+                    // favicon: 'favicon.ico',
+                    template: './src/index.ejs',
+                    // 自定义的需要注入到template的内容
+                    front_config: `<script>window.context = {}</script>`
+                }),
+            ]
+        })
+    } else {
+        webpackConfig = merge(webpackConfig, {
+            mode: 'production',
+            devtool: 'source-map',
+            output: {
+                filename: '[name].js',
+                chunkFilename: '[name].js',
+            },
+            optimization: {
+                removeAvailableModules: true,
+                removeEmptyChunks: true,
+                sideEffects: false,
+                moduleIds: 'hashed',
+                runtimeChunk: {
+                    name: 'manifest',
+                },
+                splitChunks: {
+                    chunks: 'all',
+                    maxInitialRequests: Infinity,
+                    minSize: 3000,
+                    cacheGroups: {
+                        vendors: {
+                            test: /node_modules/,
+                            chunks: 'all',
+                            // 分包规则，相同name的模块将会被打包成[name].js
+                            name(module) {
+                                let name = 'venderLibs';
+                                const libraries = config.libraries
+                                if (libraries) {
+                                    const context = module.context.split('/');
+                                    const nIndex = context.indexOf('node_modules');
+                                    let packageName = context[nIndex + 1];
+                                    if (packageName.indexOf('@') > -1) {
+                                        packageName = `${context[nIndex + 1]}/${context[nIndex + 2]}`;
+                                    }
+                                    const names = Object.keys(libraries);
+                                    names.map((val) => {
+                                        if (libraries[val].indexOf(packageName) >= 0) {
+                                            name = val;
+                                        }
+                                    });
+                                }
+                                return name;
+                            },
+                        },
+                    },
+                },
+                minimizer: [
+                    new TerserPlugin({
+                        // sourceMap: true,
+                        terserOptions: {
+                            compress: {
+                                'drop_console': false,
+                                'drop_debugger': true,
+                            },
+                            output: {
+                                comments: false,
+                            },
+                        },
+                    }),
+                    // new OptimizeCSSAssetsPlugin({
+                    //     cssProcessorOptions: {
+                    //         discardComments: { removeAll: true },
+                    //     },
+                    //     canPrint: true,
+                    // }),
+                ],
+            },
+            plugins: [
+                new HtmlWebpackPlugin({
+                    loading: config.loading,
+                    cache: false,
+                    minify: {
+                        collapseWhitespace: true,
+                        removeComments: false,
+                        removeRedundantAttributes: true,
+                        removeScriptTypeAttributes: true,
+                        removeStyleLinkTypeAttributes: true,
+                        useShortDoctype: true,
+                    },
+                    filename: 'index.html',
+                    // favicon: 'favicon.ico',
+                    template: './src/index.ejs',
+                    // 自定义的需要注入到template的内容
+                    front_config: `<script>window.context = {}</script>`
+                }),
+                new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+            ],
+        })
+
+        if (webpackConfig.extraCssPlugin) {
+            prodConfig.plugins.push(new MiniCssExtractPlugin({
+                filename: 'css/[name].[contenthash].css',
+                chunkFilename: 'css/[name].[contenthash].css',
+                ignoreOrder: false, // Enable to remove warnings about conflicting order
+            }));
+        }
     }
 
     return webpackConfig

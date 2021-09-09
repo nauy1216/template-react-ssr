@@ -11,7 +11,7 @@ module.exports.getConfig = function getConfig() {
         postScssPlugins: null,
         cssScopeName: isDev ? '[path][name]__[local]' : '[local]__[hash:base64:5]',
         // isProd && extraCssPlugin为true时将css抽离
-        extraCssPlugin: false,
+        extraCssPlugin: true,
         // 图片、字体等资源
         assetsPublicPath: '/',
         alias: {},
@@ -21,6 +21,9 @@ module.exports.getConfig = function getConfig() {
 
         },
         svgr: true,
-        analyzePlugin: false
+        analyzePlugin: false,
+        libraries: {
+            vendors: ['react', 'react-dom']
+        }
     }
 }
