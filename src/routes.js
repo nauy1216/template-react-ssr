@@ -1,12 +1,12 @@
 import React, {Component, Fragment} from 'react';
 import {Route} from 'react-router-dom';
-import Home from './containers/Home';
-import Counter from './containers/Counter';
-import Login from './containers/Login';
-import Logout from './containers/Logout';
-import Profile from './containers/Profile';
-import NotFound from './containers/NotFound';
-import App from './containers/App';
+import Home from './pages/Home';
+import Counter from './pages/Counter';
+import Login from './pages/Login';
+import Logout from './pages/Logout';
+import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
+import App from './pages/App';
 
 // 集中式路由
 export default [

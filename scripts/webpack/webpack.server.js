@@ -1,10 +1,9 @@
 const path = require('path');
 const nodeExternal = require('webpack-node-externals');
 const merge = require('webpack-merge');
-const base = require('./webpack.base');
 const paths = require('../paths')
 
-module.exports = merge(base, {
+module.exports = merge({}, {
     // 注意这个值
     target: 'node',
     entry: paths.serverEntry,
