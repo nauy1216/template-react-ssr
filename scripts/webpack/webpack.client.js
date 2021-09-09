@@ -182,7 +182,7 @@ module.exports = function () {
     const config = getConfig()
 
     const webpackConfig = merge({}, {
-        mode: 'development',
+        mode: config.isDev? 'development': 'production',
         target: 'web',
         devtool: 'cheap-module-eval-source-map',
         entry: paths.clientEntry,
@@ -288,11 +288,14 @@ module.exports = function () {
             }),
             new HtmlWebpackPlugin({
                 // inject: true,
+                chunks: 'all',
+                hash: true,
                 cache: false,
-                loading: config.loading,
+                loading: false,
                 filename: 'index.html',
                 // favicon: 'favicon.ico',
                 template: './src/index.ejs',
+                // 自定义的需要注入到template的内容
                 front_config: `<script>window.context = {}</script>`
             }),
         ],
