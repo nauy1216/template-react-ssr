@@ -342,18 +342,18 @@ module.exports = function () {
                 chunkFilename: '[name].js',
             },
             plugins: [
-                new HtmlWebpackPlugin({
-                    // inject: true,
-                    chunks: 'all',
-                    hash: true,
-                    cache: false,
-                    loading: false,
-                    filename: 'index.html',
-                    // favicon: 'favicon.ico',
-                    template: './src/index.ejs',
-                    // 自定义的需要注入到template的内容
-                    front_config: `<script>window.context = {}</script>`
-                }),
+                // new HtmlWebpackPlugin({
+                //     // inject: true,
+                //     chunks: 'all',
+                //     hash: true,
+                //     cache: false,
+                //     loading: false,
+                //     filename: 'index.html',
+                //     // favicon: 'favicon.ico',
+                //     template: './src/index.ejs',
+                //     // 自定义的需要注入到template的内容
+                //     front_config: `<script>window.context = {}</script>`
+                // }),
             ]
         })
     } else {

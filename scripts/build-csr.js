@@ -7,7 +7,7 @@ const chalk = require('chalk')
 
 compiler.watch({
   aggregateTimeout: 300,
-  poll: undefined
+  poll: 1000
 }, (err, stats) => {
   if (err) {
     console.log(err);
