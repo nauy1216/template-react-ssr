@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {Helmet} from 'react-helmet';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { Helmet } from 'react-helmet';
+import { connect } from 'react-redux';
 import actions from '../../store/actions/home';
 
 class Home extends Component {
@@ -22,7 +22,7 @@ class Home extends Component {
             <>
                 <Helmet>
                     <title>React-SSR</title>
-                    <meta name="description" content="首页描述"/>
+                    <meta name="description" content="首页描述" />
                 </Helmet>
                 <div className="row">
                     <div className="col-md-6 col-md-offset-3">

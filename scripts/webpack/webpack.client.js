@@ -17,6 +17,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // 对提取出来的css进行压缩
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 
 function scssRules(config) {
     const scssRules = [
@@ -454,6 +456,19 @@ module.exports = function () {
         }
     }
 
+    // 硬盘缓存, 速度能提升2倍
+    webpackConfig.plugins.push(
+        new HardSourceWebpackPlugin(),
+        // HardSourceWebpackPlugin会和SpeedMeasurePlugin、mini-css-extract-plugin冲突
+        new HardSourceWebpackPlugin.ExcludeModulePlugin([
+            {
+                test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
+            },
+        ]),
+    );
+
+    // 打包速度分析
+    // new SpeedMeasurePlugin().wrap(webpackConfig)
     return webpackConfig
 }
 

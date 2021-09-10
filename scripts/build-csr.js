@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'production' //'development'
+process.env.NODE_ENV = 'development' //'production' //
 
 const webpack = require('webpack')
 const webpackConfig = require('./webpack/webpack.client')
