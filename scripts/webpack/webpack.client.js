@@ -13,8 +13,10 @@ const CleanWebpackPlugin = require('clean-webpack-plugin').CleanWebpackPlugin;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+// 提取css
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// 对提取出来的css进行压缩
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 function scssRules(config) {
     const scssRules = [
@@ -193,15 +195,12 @@ module.exports = function () {
     const config = getConfig()
 
     let webpackConfig = {
-        // mode: config.isDev? 'development': 'production',
         target: 'web',
-        // devtool: 'cheap-module-eval-source-map',
         entry: {
             client: paths.clientEntry
         },
         output: {
             path: paths.clientBuild,
-            // filename: 'client.js',
             publicPath: './'
         },
         resolve: {
@@ -297,6 +296,7 @@ module.exports = function () {
             }),
             new webpack.DefinePlugin({
                 'DEBUG': config.isDev,
+                '__BROWSER__': true,
                 ...config.definePlugin,
             })
         ],
@@ -355,6 +355,7 @@ module.exports = function () {
             ]
         })
     } else {
+        // test、staging、production
         webpackConfig = merge(webpackConfig, {
             mode: 'production',
             devtool: 'source-map',
@@ -414,12 +415,12 @@ module.exports = function () {
                             },
                         },
                     }),
-                    // new OptimizeCSSAssetsPlugin({
-                    //     cssProcessorOptions: {
-                    //         discardComments: { removeAll: true },
-                    //     },
-                    //     canPrint: true,
-                    // }),
+                    new OptimizeCSSAssetsPlugin({
+                        cssProcessorOptions: {
+                            discardComments: { removeAll: true },
+                        },
+                        canPrint: true,
+                    }),
                 ],
             },
             plugins: [

@@ -9,9 +9,14 @@ compiler.watch({
   aggregateTimeout: 300,
   poll: undefined
 }, (err, stats) => {
-  // 这里打印 watch/build 结果...
-  if (!err) {
-    console.log(chalk.blue('csr build success.'))
+  if (err) {
+    console.log(err);
+    process.exit(2);
   }
+  console.log(stats && stats.toString({
+    chunks: false,
+    colors: true,
+    children: false,
+  }));
 });
 
