@@ -23,6 +23,6 @@ app.get('*', function (req, res) {
     render(req, res);
 });
 
-app.listen(3000, function () {
-    console.log('server started at port 3000');
+app.listen(9527, function () {
+    console.log('server started at port 9527');
 });

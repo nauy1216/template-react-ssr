@@ -212,6 +212,7 @@ module.exports = function () {
             ],
             alias: {
                 ...config.alias,
+                '@': path.resolve(paths.root, './src')
             },
             extensions: ['.ts', '.tsx', '.js', '.jsx', '.css', '.scss'],
             symlinks: false,
