@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
 import {log} from '../../utils/logger'
+import style from './index.scss'
+console.log('style', style)
+
 class Home extends Component {
     state = {}
     constructor(props) {
         super(props)
         this.state = {}
-        debugger
         log('[Home constructor]');
     }
 
@@ -31,7 +33,7 @@ class Home extends Component {
                     <title>React-SSR</title>
                     <meta name="description" content="首页描述" />
                 </Helmet>
-                <div>
+                <div styleName="red" className={style.bold} >
                     home
                 </div>
             </>

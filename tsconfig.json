@@ -21,12 +21,13 @@
     "noImplicitAny": false,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": [
-      "node"
-    ]
+    // "types": [
+    //   "node"
+    // ]
   },
   "include": [
     "server",
-    "src"
+    "src",
+    "global.d.ts"
   ]
 }
