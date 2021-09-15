@@ -3,6 +3,10 @@ import { Helmet } from "react-helmet";
 import { renderToString } from "react-dom/server";
 import { matchRoutes } from "react-router-config";
 import { createSSRRender } from "../src/server/index";
+import path from "path";
+import fs from "fs";
+
+const htmlPath = path.resolve(process.cwd(), "public/client.html");
 const helmet = Helmet.renderStatic();
 
 export default function (req, res) {
@@ -25,13 +29,14 @@ export default function (req, res) {
   // 当前匹配到的路由如果需要异步请求数据，那么就在这里请求数据
   matchedRoutes.forEach((item) => {
     if (item.route.loadData) {
-      promises.push(
-        new Promise(function (resolve) {
-          // 防止一个接口的失败，影响页面的渲染
-          // 不管调用接口是否失败，都让它成功
-          return item.route.loadData(SSRRender.store).then(resolve, resolve);
-        })
-      );
+      promises
+        .push
+        // new Promise(function (resolve) {
+        //   // 防止一个接口的失败，影响页面的渲染
+        //   // 不管调用接口是否失败，都让它成功
+        //   return item.route.loadData(SSRRender.store).then(resolve, resolve);
+        // })
+        ();
     }
   });
 
@@ -52,27 +57,41 @@ export default function (req, res) {
       res.statusCode = 404;
     }
 
-    res.send(`
-            <html>
-                <head>
-                ${helmet.title.toString()}
-                ${helmet.meta.toString()}
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" />
-                <style>${cssStr}</style>
-                </head>
-                <body>
-                <div id="root">${html}</div>
-                <script>
-                  // 服务端：组件初始化时会请求数据，请求的数据会存到服务端仓库中，然后组件使用数据显示相应内容
-                  // 客户端：为了避免组件挂载时又一次的请求数据（当服务器端已经请求过数据并返回了有数据的内容） 
-                  // 所以这里要获取下存在服务端仓库中的数据并作为初始值存到 window 中
-                  // 俗称：数据的脱水
-                  window.context = {
-                      state:${JSON.stringify(SSRRender.store.getState())}
-                  }
-                </script>
-                <script src="/client.js"></script>
-                </body>
-            </html>`);
+    fs.readFile(htmlPath, (err, data) => {
+      debugger
+      if (err) {
+        res.send(`<h1>Error:</h1>
+        <p>${JSON.stringify(err)}</p>`)
+      } else {
+        const htmlTemple = data.toString('utf-8', 0, data.length)
+        .replace(/<!--start-ssr-meta-->(.)*<!--end-ssr-meta-->/igm, `<!--start-ssr-meta-->${helmet.meta.toString()}<!--end-ssr-meta-->`)
+        .replace(/<!--start-ssr-title-->(.)*<!--end-ssr-title-->/igm, `<!--start-ssr-title-->${helmet.title.toString()}<!--end-ssr-title-->`)
+        .replace(/<!--start-ssr-app-->(.)*<!--end-ssr-app-->/igm, `<!--start-ssr-app-->${html}<!--end-ssr-app-->`)
+        res.send(htmlTemple);
+      }
+    });
+
+    // res.send(`
+    //         <html>
+    //             <head>
+    //             ${helmet.title.toString()}
+    //             ${helmet.meta.toString()}
+    //             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" />
+    //             <style>${cssStr}</style>
+    //             </head>
+    //             <body>
+    //             <div id="root">${html}</div>
+    //             <script>
+    //               // 服务端：组件初始化时会请求数据，请求的数据会存到服务端仓库中，然后组件使用数据显示相应内容
+    //               // 客户端：为了避免组件挂载时又一次的请求数据（当服务器端已经请求过数据并返回了有数据的内容）
+    //               // 所以这里要获取下存在服务端仓库中的数据并作为初始值存到 window 中
+    //               // 俗称：数据的脱水
+    //               window.context = {
+    //                   state:${JSON.stringify(SSRRender.store.getState())}
+    //               }
+    //             </script>
+    //             <script src="/client.js"></script>
+    //             </body>
+    //         </html>`);
   });
 }

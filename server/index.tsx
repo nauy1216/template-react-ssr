@@ -1,7 +1,6 @@
 import render from './render';
 import proxy from 'express-http-proxy';
 const express = require('express');
-
 const app = express();
 
 app.use(express.static('public'));

@@ -58,16 +58,16 @@ function scssRules(config) {
         },
     ];
 
-    // 正式环境并且extraCssPlugin时导出css文件，否则用style-loader处理
-    if (!config.isDev && config.extraCssPlugin) {
-        scssRules.unshift({ loader: MiniCssExtractPlugin.loader });
-    } else {
-        // 服务端渲染不能用 style-loader，因为 node 没有 document 对象，无法插入 style 标签
-        // 服务端本来就不能渲染 dom，只是提供 html/css/js 代码给浏览器，交给浏览器去渲染
-        // 服务端返回的 html 源码里，没有 style 标签
-        // 而在浏览器中的 html 源码里，有 style 标签，是通过 js 插入进去的
-        scssRules.unshift('isomorphic-style-loader');
-    }
+    // // 正式环境并且extraCssPlugin时导出css文件，否则用style-loader处理
+    // if (!config.isDev && config.extraCssPlugin) {
+    //     scssRules.unshift({ loader: MiniCssExtractPlugin.loader });
+    // } else {
+    //     // 服务端渲染不能用 style-loader，因为 node 没有 document 对象，无法插入 style 标签
+    //     // 服务端本来就不能渲染 dom，只是提供 html/css/js 代码给浏览器，交给浏览器去渲染
+    //     // 服务端返回的 html 源码里，没有 style 标签
+    //     // 而在浏览器中的 html 源码里，有 style 标签，是通过 js 插入进去的
+    //     scssRules.unshift('isomorphic-style-loader');
+    // }
 
     return scssRules
 }
@@ -91,15 +91,15 @@ function cssRules(config) {
         // },
     ]
     // 正式环境并且extraCssPlugin时导出css文件，否则用style-loader处理
-    if (!config.isDev && config.extraCssPlugin) {
-        rules.unshift({ loader: MiniCssExtractPlugin.loader });
-    } else {
-        // 服务端渲染不能用 style-loader，因为 node 没有 document 对象，无法插入 style 标签
-        // 服务端本来就不能渲染 dom，只是提供 html/css/js 代码给浏览器，交给浏览器去渲染
-        // 服务端返回的 html 源码里，没有 style 标签
-        // 而在浏览器中的 html 源码里，有 style 标签，是通过 js 插入进去的
-        rules.unshift('isomorphic-style-loader');
-    }
+    // if (!config.isDev && config.extraCssPlugin) {
+    //     rules.unshift({ loader: MiniCssExtractPlugin.loader });
+    // } else {
+    //     // 服务端渲染不能用 style-loader，因为 node 没有 document 对象，无法插入 style 标签
+    //     // 服务端本来就不能渲染 dom，只是提供 html/css/js 代码给浏览器，交给浏览器去渲染
+    //     // 服务端返回的 html 源码里，没有 style 标签
+    //     // 而在浏览器中的 html 源码里，有 style 标签，是通过 js 插入进去的
+    //     rules.unshift('isomorphic-style-loader');
+    // }
     return rules
 }
 
@@ -202,7 +202,6 @@ function babelConfig(config) {
 
 
 module.exports = function () {
-    debugger
     const config = getConfig()
 
     let webpackConfig = {
@@ -381,41 +380,41 @@ module.exports = function () {
                 removeAvailableModules: true,
                 removeEmptyChunks: true,
                 sideEffects: false,
-                moduleIds: 'hashed',
-                runtimeChunk: {
-                    name: 'manifest',
-                },
-                splitChunks: {
-                    chunks: 'all',
-                    maxInitialRequests: Infinity,
-                    minSize: 3000,
-                    cacheGroups: {
-                        vendors: {
-                            test: /node_modules/,
-                            chunks: 'all',
-                            // 分包规则，相同name的模块将会被打包成[name].js
-                            name(module) {
-                                let name = 'venderLibs';
-                                const libraries = config.libraries
-                                if (libraries) {
-                                    const context = module.context.split('/');
-                                    const nIndex = context.indexOf('node_modules');
-                                    let packageName = context[nIndex + 1];
-                                    if (packageName.indexOf('@') > -1) {
-                                        packageName = `${context[nIndex + 1]}/${context[nIndex + 2]}`;
-                                    }
-                                    const names = Object.keys(libraries);
-                                    names.map((val) => {
-                                        if (libraries[val].indexOf(packageName) >= 0) {
-                                            name = val;
-                                        }
-                                    });
-                                }
-                                return name;
-                            },
-                        },
-                    },
-                },
+                // moduleIds: 'hashed',
+                // runtimeChunk: {
+                //     name: 'manifest',
+                // },
+                // splitChunks: {
+                //     chunks: 'all',
+                //     maxInitialRequests: Infinity,
+                //     minSize: 3000,
+                //     cacheGroups: {
+                //         vendors: {
+                //             test: /node_modules/,
+                //             chunks: 'all',
+                //             // 分包规则，相同name的模块将会被打包成[name].js
+                //             name(module) {
+                //                 let name = 'venderLibs';
+                //                 const libraries = config.libraries
+                //                 if (libraries) {
+                //                     const context = module.context.split('/');
+                //                     const nIndex = context.indexOf('node_modules');
+                //                     let packageName = context[nIndex + 1];
+                //                     if (packageName.indexOf('@') > -1) {
+                //                         packageName = `${context[nIndex + 1]}/${context[nIndex + 2]}`;
+                //                     }
+                //                     const names = Object.keys(libraries);
+                //                     names.map((val) => {
+                //                         if (libraries[val].indexOf(packageName) >= 0) {
+                //                             name = val;
+                //                         }
+                //                     });
+                //                 }
+                //                 return name;
+                //             },
+                //         },
+                //     },
+                // },
                 minimizer: [
                     new TerserPlugin({
                         // sourceMap: true,
@@ -459,13 +458,13 @@ module.exports = function () {
             ],
         })
 
-        if (config.extraCssPlugin) {
-            webpackConfig.plugins.push(new MiniCssExtractPlugin({
-                filename: 'css/[name].[contenthash].css',
-                chunkFilename: 'css/[name].[contenthash].css',
-                ignoreOrder: false, // Enable to remove warnings about conflicting order
-            }));
-        }
+        // if (config.extraCssPlugin) {
+        //     webpackConfig.plugins.push(new MiniCssExtractPlugin({
+        //         filename: 'css/[name].[contenthash].css',
+        //         chunkFilename: 'css/[name].[contenthash].css',
+        //         ignoreOrder: false, // Enable to remove warnings about conflicting order
+        //     }));
+        // }
     }
 
     // 硬盘缓存, 速度能提升2倍

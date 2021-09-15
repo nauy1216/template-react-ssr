@@ -71,19 +71,18 @@ function cssRules(config) {
     const rules = [
         // 'style-loader',
         'css-loader',
-        // TODO 解决报错
-        // {
-        //     loader: 'postcss-loader',
-        //     options: {
-        //         plugins: () => {
-        //             // 配置有plugin、全亮覆盖
-        //             if (config.postCssPlugins) {
-        //                 return config.postCssPlugins.map((plugin) => require(plugin.name)(plugin.options || {}));
-        //             }
-        //             return [autoprefixer()];
-        //         },
-        //     },
-        // },
+        {
+            loader: 'postcss-loader',
+            options: {
+                plugins: () => {
+                    // 配置有plugin、全亮覆盖
+                    if (config.postCssPlugins) {
+                        return config.postCssPlugins.map((plugin) => require(plugin.name)(plugin.options || {}));
+                    }
+                    return [autoprefixer()];
+                },
+            },
+        },
     ]
     // 正式环境并且extraCssPlugin时导出css文件，否则用style-loader处理
     if (!config.isDev && config.extraCssPlugin) {
@@ -193,7 +192,6 @@ function babelConfig(config) {
 
 
 module.exports = function () {
-    debugger
     const config = getConfig()
 
     let webpackConfig = {
@@ -343,18 +341,18 @@ module.exports = function () {
                 chunkFilename: '[name].js',
             },
             plugins: [
-                // new HtmlWebpackPlugin({
-                //     // inject: true,
-                //     chunks: 'all',
-                //     hash: true,
-                //     cache: false,
-                //     loading: false,
-                //     filename: 'index.html',
-                //     // favicon: 'favicon.ico',
-                //     template: './src/index.ejs',
-                //     // 自定义的需要注入到template的内容
-                //     front_config: `<script>window.context = {}</script>`
-                // }),
+                new HtmlWebpackPlugin({
+                    // inject: true,
+                    chunks: 'all',
+                    hash: true,
+                    cache: false,
+                    loading: false,
+                    filename: 'client.html',
+                    // favicon: 'favicon.ico',
+                    template: './src/index.ejs',
+                    // 自定义的需要注入到template的内容
+                    front_config: `<script>window.context = {}</script>`
+                }),
             ]
         })
     } else {
@@ -438,7 +436,7 @@ module.exports = function () {
                         removeStyleLinkTypeAttributes: true,
                         useShortDoctype: true,
                     },
-                    filename: 'index.html',
+                    filename: 'client.html',
                     // favicon: 'favicon.ico',
                     template: './src/index.ejs',
                     // 自定义的需要注入到template的内容
