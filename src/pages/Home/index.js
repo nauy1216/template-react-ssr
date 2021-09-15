@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
-import {log} from '@/utils/logger'
+import {log} from '../..//utils/logger'
 class Home extends Component {
     constructor(props) {
         super(props)
+        this.state = {}
         log('[Home constructor]');
     }
 
