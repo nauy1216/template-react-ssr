@@ -8,3 +8,7 @@
 # Q&A
 
 - ssr 支持的生命周期有哪些？
+
+# docs
+
+- https://github.com/vortesnail/blog/issues/14

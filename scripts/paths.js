@@ -13,7 +13,7 @@ module.exports = {
   root: resolveApp('.'),
   serverBuild: resolveApp('dist'),
   serverWebpackConfig: resolveApp('scripts/webpack/webpack.server'),
-  serverEntry: resolveApp('server/index.js'),
+  serverEntry: resolveApp('server/index.tsx'),
   clientBuild: resolveApp('public'),
-  clientEntry: resolveApp('src/client/index.js')
+  clientEntry: resolveApp('src/client/index.tsx')
 };

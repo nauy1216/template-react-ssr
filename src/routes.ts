@@ -7,16 +7,16 @@ export default [
     {
         path: '/',
         component: App,
-        loadData: App.loadData,
+        loadData: undefined,
         // 子路由
         routes: [
             {
-                path: '/',
+                        path: '/',
                 component: Home,
                 exact: true,
                 key: '/',
                 // 加载数据，如果此配置项有了这个属性，那么意味着需要加载异步数据
-                loadData: Home.loadData
+                // loadData: Home.
             },
         ]
     }
