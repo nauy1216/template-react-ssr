@@ -11,9 +11,9 @@ const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
 module.exports = {
   root: resolveApp('.'),
-  serverBuild: resolveApp('dist'),
+  serverBuild: resolveApp('dist/server'),
   serverWebpackConfig: resolveApp('scripts/webpack/webpack.server'),
   serverEntry: resolveApp('server/index.tsx'),
-  clientBuild: resolveApp('public'),
+  clientBuild: resolveApp('dist/client'),
   clientEntry: resolveApp('src/client/index.tsx')
 };

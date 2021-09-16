@@ -6,7 +6,7 @@ import { createSSRRender } from "../src/server/index";
 import path from "path";
 import fs from "fs";
 
-const htmlPath = path.resolve(process.cwd(), "public/client.html");
+const htmlPath = path.resolve(process.cwd(), "dist/client/client.html");
 const helmet = Helmet.renderStatic();
 
 export default function (req, res) {

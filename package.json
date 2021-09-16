@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npm-run-all --parallel dev:**",
-    "dev:start": "nodemon dist/server.js",
+    "dev:start": "nodemon dist/server/server.js",
     "dev:ssr": "node scripts/build-ssr.js",
     "dev:csr": "node scripts/build-csr.js",
     "build:ssr": "node scripts/build-ssr.js",
