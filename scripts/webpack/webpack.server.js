@@ -189,7 +189,7 @@ function babelConfig(config) {
             ['@babel/plugin-proposal-decorators', { 'legacy': true }],
             ['@babel/plugin-proposal-class-properties', { 'loose': true }],
             '@babel/plugin-syntax-dynamic-import',
-            '@babel/plugin-proposal-optional-chaining',
+            ['@babel/plugin-proposal-optional-chaining', { 'legacy': true }],
             '@babel/plugin-proposal-nullish-coalescing-operator',
             'const-enum',
         ],

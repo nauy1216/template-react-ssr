@@ -10,6 +10,20 @@ const htmlPath = path.resolve(process.cwd(), "public/client.html");
 const helmet = Helmet.renderStatic();
 
 export default function (req, res) {
+  debugger
+  if (req.path.indexOf('/client.html') === 0) {
+    fs.readFile(htmlPath, (err, data) => {
+      debugger
+      if (err) {
+        res.send(`<h1>Error:</h1>
+        <p>${JSON.stringify(err)}</p>`)
+      } else {
+        let htmlTemple = data.toString('utf-8', 0, data.length)
+        res.send(htmlTemple);
+      }
+    });
+    return 
+  }
   // cssArr  收集每一个组件引入的样式
   let context = { cssArr: [] };
 
@@ -63,10 +77,12 @@ export default function (req, res) {
         res.send(`<h1>Error:</h1>
         <p>${JSON.stringify(err)}</p>`)
       } else {
-        const htmlTemple = data.toString('utf-8', 0, data.length)
-        .replace(/<!--start-ssr-meta-->(.)*<!--end-ssr-meta-->/igm, `<!--start-ssr-meta-->${helmet.meta.toString()}<!--end-ssr-meta-->`)
-        .replace(/<!--start-ssr-title-->(.)*<!--end-ssr-title-->/igm, `<!--start-ssr-title-->${helmet.title.toString()}<!--end-ssr-title-->`)
-        .replace(/<!--start-ssr-app-->(.)*<!--end-ssr-app-->/igm, `<!--start-ssr-app-->${html}<!--end-ssr-app-->`)
+        let htmlTemple = data.toString('utf-8', 0, data.length)
+        let meta = helmet.meta.toString()
+        let title = helmet.title.toString()
+        htmlTemple = htmlTemple.replace(/<!--start-ssr-meta-->[\s\S]*<!--end-ssr-meta-->/igm, `<!--start-ssr-meta-->${meta}<!--end-ssr-meta-->`)
+        htmlTemple = htmlTemple.replace(/<!--start-ssr-title-->[\s\S]*<!--end-ssr-title-->/igm, `<!--start-ssr-title-->${title}<!--end-ssr-title-->`)
+        htmlTemple = htmlTemple.replace(/<!--start-ssr-app-->[\s\S]*<!--end-ssr-app-->/igm, `<!--start-ssr-app--><div id="root" data-ssr="true">${html}</div><!--end-ssr-app-->`)
         res.send(htmlTemple);
       }
     });
